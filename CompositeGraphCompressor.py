@@ -245,39 +245,6 @@ def printCompositeResults(datsetNamePath, repairList, edgeCount, vertexCount, ed
     print("AM Compression ratio:", vertexCount * vertexCount * totalListCount / compressedBits, "times")
     print("=========================")
 
-def printResults(datsetNamePath, repairList, vertexCount, edgeCount, dictRules, totalListCount):
-    # printing the output results
-    countRemList = 0
-    nextNum = len(dictRules) + vertexCount
-    for edgList in repairList:
-        countRemList = countRemList + len(edgList)
-    countTotalInt = len(dictRules) * 2 + countRemList
-    print("=========================")
-    print("Dataset Name:", datsetNamePath)
-    print("Total graphs:", totalListCount)
-    print("Vertices per graph:", vertexCount)
-    print("Total edges:", edgeCount)
-    print("Composit edges:", edgeSumCount)
-    print("Edges/Vertex ratio:", edgeCount / (vertexCount * totalListCount))
-    print("Remaining list:", countRemList)
-    print("Dictionary rules:", len(dictRules))
-    print("Total integers required:", countTotalInt)
-    print("=========================")
-
-    bitsPerIntOrg = math.ceil(math.log2(vertexCount))
-    #bitsPerIntZip = math.ceil(math.log2(nextNum))
-    orignalBits = ((edgeCount + vertexCount) * totalListCount) * bitsPerIntOrg
-    compressedBits = (countTotalInt * bitsPerIntOrg) + vertexCount + countRemList
-
-    print("Bits per integer:", bitsPerIntOrg, "bits")
-    print("Total AL required bits:", orignalBits, "bits")
-    print("Total compression required bits:", compressedBits, "bits")
-    print("AL Compression ratio:", orignalBits / compressedBits, "times")
-    print("Total AM required bits:", vertexCount * vertexCount * totalListCount, "bits")
-    print("AM Compression ratio:", vertexCount * vertexCount * totalListCount / compressedBits, "times")
-    print("=========================")
-
-
 def dataCleaningForPPINetwork(mypath):
     i = 1
     j = 1
