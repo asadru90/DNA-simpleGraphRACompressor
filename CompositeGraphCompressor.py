@@ -227,12 +227,14 @@ def repairAlgoDictFunc(repairList, vertexCount, edgeCount, maxPairLimit):
     maxPairCount = []
     dictRules = []
     nextNum = vertexCount
+    bitsPerInt = math.ceil(math.log2(vertexCount))
+    maxBinaryNum = pow(2, bitsPerInt) 
 
     print("Repair Algorithms Running!...")
     # Replace the common pair of edges with dictionary rules
 
     maxPair = maxPairLimit + 1
-    while ((maxPair > maxPairLimit) and (nextNum<512)):
+    while (maxPair > maxPairLimit) and (nextNum < maxBinaryNum):
 
         maxCount = 0
         countMostDictInit(nextNum + 1)
@@ -473,7 +475,6 @@ if __name__ == "__main__":
         rows[i] = dataCleaningForPPINetwork(datasetNamePath[i])
         edgeList[i], vertexCount[i] = convertCSVtoList(rows[i])
         edgeCount[i] = edgesCountList(edgeList[i])
-        print(edgeList[i])
         compositeEdgesList = unionListCompositeSequential(edgeList[i], compositeEdgesList)
         totalEdgesCount = totalEdgesCount + edgeCount[i]
         totalVertexCount = max(totalVertexCount, vertexCount[i])
@@ -482,10 +483,7 @@ if __name__ == "__main__":
         totalBitsAL = totalBitsAL + bitsAL[i]
 
     totalEdgesSumCount = edgesCountList(compositeEdgesList)
-    print(totalEdgesSumCount, totalEdgesCount, totalEdgesCount- totalEdgesSumCount)
-    #compositeEdgesList = repairAlgoDefForAll(compositeEdgesList)
-    #print(compositeEdgesList)
+    #print(totalEdgesSumCount, totalEdgesCount, totalEdgesCount- totalEdgesSumCount)
 
     remList, dictRules = repairAlgoDictFunc(compositeEdgesList, totalVertexCount, totalEdgesSumCount, maxPairLimit)
-    printCompositeGraphResults(remList, dictRules, totalVertexCount, totalEdgesSumCount, totalBitsAM, totalBitsAL,
-                              compositeCount)
+    printCompositeGraphResults(remList, dictRules, totalVertexCount, totalEdgesSumCount, totalBitsAM, totalBitsAL, compositeCount)
