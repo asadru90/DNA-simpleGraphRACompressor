@@ -24,51 +24,58 @@ def unionListCompositeSequential(lst1, lst2):
         for idx in range(0, list1Count):
             temp1 = list(lst1[idx])
             temp1.sort()
+            #print("List", i, temp1)
             temp1 = repairAlgoDefFunc(temp1)
             temp2 = list(lst2[idx])
             temp2.sort()
+            #print("List", i, temp2)
             temp2 = repairAlgoDefFunc(temp2)
             temp = temp1 + temp2
-            print("List", i, temp1, temp2, len(temp1), len(temp2))
+            #print("List", i, temp1, temp2, len(temp1), len(temp2), temp)
             final_list.append(temp)
             i += 1
         for idx in range(i, list2Count):
             temp = list(lst2[idx])
             temp.sort()
-            print("List", i, temp, len(temp))
+            #print("List_B", i, temp, len(temp))
             temp = repairAlgoDefFunc(temp)
             final_list.append(temp)
+            #print("List_A", i, temp)
             i += 1
     elif list2Count < list1Count:
         for idy in range(0, list2Count):
-            print("asad")
             temp1 = list(lst1[idy])
             temp1.sort()
+            #print("List", i, temp1)
             temp1 = repairAlgoDefFunc(temp1)
             temp2 = list(lst2[idy])
             temp2.sort()
+            #print("List", i, temp2)
             temp2 = repairAlgoDefFunc(temp2)
             temp = temp1 + temp2
-            print("List", i, temp1, temp2, len(temp1), len(temp2))
+            #print("List", i, temp1, temp2, len(temp1), len(temp2), temp)
             final_list.append(temp)
             i += 1
         for idx in range(i, list1Count):
             temp = list(lst1[idx])
             temp.sort()
+            #print("List", i, temp)
             temp = repairAlgoDefFunc(temp)
-            print("List", i, temp, len(temp))
+            #print("List", i, temp, len(temp))
             final_list.append(temp)
             i += 1
     else:
         for idx in range(0, list1Count):
             temp1 = list(lst1[idx])
             temp1.sort()
+            #print("List", i, temp1)
             temp1 = repairAlgoDefFunc(temp1)
             temp2 = list(lst2[idx])
             temp2.sort()
+            #print("List", i, temp2)
             temp2 = repairAlgoDefFunc(temp2)
             temp = temp1 + temp2
-            print("List", i, temp1, temp2, len(temp1), len(temp2))
+            #print("List", i, temp1, temp2, len(temp1), len(temp2), temp)
             final_list.append(temp)
             i += 1
     return final_list
@@ -114,10 +121,10 @@ def countMostDictInit(nxtTerm):
 
 
 def findMostPair(rePairList, nxtTerm):
-    flag = 0;
-    fprev = 0;
-    fTerm = 0;
-    sTerm = 0;
+    flag = 0
+    fprev = 0
+    fTerm = 0
+    sTerm = 0
     countDuplicate = 0
     edgeListCount = len(rePairList)
     if edgeListCount > 1:
@@ -228,7 +235,7 @@ def repairAlgoDictFunc(repairList, vertexCount, edgeCount, maxPairLimit):
     dictRules = []
     nextNum = vertexCount
     bitsPerInt = math.ceil(math.log2(vertexCount))
-    maxBinaryNum = pow(2, bitsPerInt) 
+    maxBinaryNum = pow(2, bitsPerInt)
 
     print("Repair Algorithms Running!...")
     # Replace the common pair of edges with dictionary rules
@@ -284,39 +291,69 @@ def convertCSVtoList(rows):
                 i = i + 1
             edgeList.append(dstVertx)
 
-    return edgesList, countVertex
+    return i, edgesList, countVertex
 
 
-def printCompositeGraphResults(remList, dictRules, vertexCount, edgeCount, representAM, representAL, compositeGraphsCount):
+def printSingleGraphResults(remList, dictRules, vertexCount, edgeCount, representAM, representAL):
 
-    print("============= Composite Graph Dataset Results ============")
     countIntRemList = 0
     bitsPerInt = math.ceil(math.log2(vertexCount))
     for edgList in remList:
         countIntRemList = countIntRemList + len(edgList)
     totalIntCount = len(dictRules) * 2 + countIntRemList
-    representCGB = (totalIntCount * bitsPerInt) + edgeCount
-    representCGA = (edgeCount * compositeGraphsCount)
-    representCG  = representCGB + representCGA
+    represent1 = (totalIntCount * bitsPerInt)
+    represent2 = vertexCount + countIntRemList
+    represent3 = represent1 + represent2
 
+    print("============= Single Graph Dataset Results ============")
     print("Edges Count:", edgeCount)
     print("Vertex Count:", vertexCount)
-    print("BitsPerInteger:", bitsPerInt)
     print("Dict Rules Count:", len(dictRules))
     print("Remaining List Count:", countIntRemList)
     print("Total Integer Count:", totalIntCount)
     print("Edges/Vertex ratio:", edgeCount / vertexCount)
-    print("Composite graph represent Before:", representCGB, "bits")
-    print("Composite graph represent After:", representCGA, "bits")
-    print(len(dictRules) * 2 * bitsPerInt, countIntRemList * bitsPerInt, vertexCount, countIntRemList)
+    print("BitsPerInteger:", bitsPerInt)
+    print("Bits required for 2*DL+RL integers:", represent1, "bits")
+    print("Bits required for |V|+|RL|:", represent2, "bits")
+    print("Bits required for ((2*DL+RL)*bitsPerInt)+|V|+|RL|:", represent3, "bits")
     print("Total AM required:", representAM, "bits")
     print("Total AL required:", representAL, "bits")
-    print("Total CG required:", representCG, "bits")
-    print("AM/CG Compression Ratio:", representAM / representCG, "bits")
-    print("AL/CG Compression Ratio:", representAL / representCG, "bits")
-    print("============= Graph Dataset Results ============")
+    print("Total CG required:", represent3, "bits")
+    print("AM/CG Compression Ratio:", representAM / represent3, "bits")
+    print("AL/CG Compression Ratio:", representAL / represent3, "bits")
+    print("============= Single Graph Dataset Results ============")
 
-def printSingleGraphResults(datasetNamePath, edgeCount, vertexCount):
+def printCompositeGraphResults(remList, dictRules, maxvertexCount, totaledgeCount, representAM, representAL, totalvertexCount):
+
+    countIntRemList = 0
+    bitsPerInt = math.ceil(math.log2(maxvertexCount))
+    for edgList in remList:
+        countIntRemList = countIntRemList + len(edgList)
+    totalIntCount = len(dictRules) * 2 + countIntRemList
+    represent1 = (totalIntCount * bitsPerInt)
+    represent2 = totalvertexCount + totaledgeCount
+    represent3 = represent1 + represent2
+
+    print("============= Composite Graph Dataset Results ============")
+    print("Total Edges Count (Comp)|E|:", totaledgeCount)
+    print("Maximum Vertex Count:", maxvertexCount)
+    print("Total Vertex Count (Comp)|V|:", totalvertexCount)
+    print("Dict Rules Count:", len(dictRules))
+    print("Remaining List Count:", countIntRemList)
+    print("Total Integer Count:", totalIntCount)
+    print("Edges/Vertex ratio:", totaledgeCount / maxvertexCount)
+    print("BitsPerInteger:", bitsPerInt)
+    print("Bits required for 2*DL+RL integers:", represent1, "bits")
+    print("Bits required for (Comp)|V|+(Comp)|E|:", represent2, "bits")
+    print("Bits required for ((2*DL+RL)*bitsPerInt)+(Comp)|V|+(Comp)|E|:", represent3, "bits")
+    print("Total AM required:", representAM, "bits")
+    print("Total AL required:", representAL, "bits")
+    print("Total CG required:", represent3, "bits")
+    print("AM/CG Compression Ratio:", representAM / represent3, "bits")
+    print("AL/CG Compression Ratio:", representAL / represent3, "bits")
+    print("============= Composite Graph Dataset Results ============")
+
+def printSimpleCompressionGraphResults(datasetNamePath, edgeCount, vertexCount):
     print("============= Sinlge Graph Dataset Results ============")
     bitsPerInt = math.ceil(math.log2(vertexCount))
     representAL = (vertexCount + edgeCount) * bitsPerInt
@@ -388,6 +425,22 @@ def dataCleaningForPPINetwork(mypath):
     return rows
 
 
+def dataCleaningForAll(mypath):
+    file = open(mypath)
+    csvreader = csv.reader(file)
+    rows = []
+    i = 0
+    for row in csvreader:
+        i = i + 1
+        string = ''.join(map(str, row))
+        newRow = string.split(' ')
+        if i > 1:
+            node = int(newRow[1])
+            edge = int(newRow[0])
+            rows.append([node, edge])
+    file.close()
+    return rows
+
 def dataCleaningForProtein(mypath):
     file = open(mypath)
     csvreader = csv.reader(file)
@@ -404,6 +457,11 @@ def dataCleaningForProtein(mypath):
     file.close()
     return rows
 
+def dataCleaningForProteinsDataset(mypath, i):
+    if i == 0:
+        return dataCleaningForProtein(mypath)
+    if i == 1:
+        return dataCleaningForStudentsNetwork(mypath)
 
 def dataCleaningForStudentsNetwork(mypath):
     file = open(mypath)
@@ -450,40 +508,49 @@ def checkCommonEdges(edgeList1, edgeList2, edgeCount1, edgeCount2):
 
 if __name__ == "__main__":
 
-    compositeGraphsCount = 2
-    compositeCount = 0
+    compositeGraphsCount = 1
     maxPairLimit = 1
-    datasetsPath = r"D:\Datasets\PPINetworkAnalysis-master\data"
-    datasetNamePath = ["","","","",""]
-    rows = [0,0,0,0,0]
-    edgeList = [[],[],[],[],[]]
-    vertexCount = [0, 0, 0, 0, 0]
-    edgeCount = [0, 0, 0, 0, 0]
+    datasetsPath = r"D:\Datasets\PPINetworkAnalysis-master\data\ProteinDataset"
+    datasetNamePath = ["", "", "", ""]
+    rows = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    edgeList = [[], [], [], []]
+    vertexCount = [0, 0, 0, 0]
+    edgeCount = [0, 0, 0, 0]
     compositeEdgesList = []
     totalEdgesCount = 0
     totalVertexCount = 0
+    maxVertexCount = 0
     totalBitsAM = 0
     totalBitsAL = 0
-    bitsAM = [0, 0, 0, 0, 0]
-    bitsAL = [0, 0, 0, 0, 0]
+    bitsAM = [0, 0, 0, 0]
+    bitsAL = [0, 0, 0, 0]
 
-    datasetsNameFile = ["Liver-Normal.csv", "Colon-Normal.csv", "Kidney-Normal.csv", "Breast-Normal.csv"]
+    datasetsNameFile = ["Liver-Normal.csv", "Colon-Normal.csv",
+                        "ENZYMES_g246.csv", "ENZYMES_g235.csv"]
 
     compositeEdgesList = []
+    j = 0
     for i in range(compositeGraphsCount):
         datasetNamePath[i] = datasetsPath + "\\" + datasetsNameFile[i]
         rows[i] = dataCleaningForPPINetwork(datasetNamePath[i])
-        edgeList[i], vertexCount[i] = convertCSVtoList(rows[i])
+        nonEmptyVertexListCount, edgeList[i], vertexCount[i] = convertCSVtoList(rows[i])
         edgeCount[i] = edgesCountList(edgeList[i])
         compositeEdgesList = unionListCompositeSequential(edgeList[i], compositeEdgesList)
         totalEdgesCount = totalEdgesCount + edgeCount[i]
-        totalVertexCount = max(totalVertexCount, vertexCount[i])
-        bitsAL[i], bitsAM[i] = printSingleGraphResults(datasetNamePath[i], edgeCount[i], vertexCount[i])
+        totalVertexCount = totalVertexCount + vertexCount[i]
+        maxVertexCount = max(maxVertexCount, vertexCount[i])
+        bitsAL[i], bitsAM[i] = printSimpleCompressionGraphResults(datasetNamePath[i], edgeCount[i], vertexCount[i])
         totalBitsAM = totalBitsAM + bitsAM[i]
         totalBitsAL = totalBitsAL + bitsAL[i]
+        j = j + 1
 
     totalEdgesSumCount = edgesCountList(compositeEdgesList)
-    #print(totalEdgesSumCount, totalEdgesCount, totalEdgesCount- totalEdgesSumCount)
+    print("Total Edges Count:", totalEdgesSumCount, totalEdgesCount, totalEdgesCount - totalEdgesSumCount)
+    print("Empty Vertex List Count:", totalVertexCount, totalVertexCount - nonEmptyVertexListCount)
 
-    remList, dictRules = repairAlgoDictFunc(compositeEdgesList, totalVertexCount, totalEdgesSumCount, maxPairLimit)
-    printCompositeGraphResults(remList, dictRules, totalVertexCount, totalEdgesSumCount, totalBitsAM, totalBitsAL, compositeCount)
+    remList, dictRules = repairAlgoDictFunc(compositeEdgesList, maxVertexCount, totalEdgesSumCount, maxPairLimit)
+    if compositeGraphsCount == 1:
+        printSingleGraphResults(remList, dictRules, totalVertexCount, totalEdgesSumCount, totalBitsAM, totalBitsAL)
+    else:
+        printCompositeGraphResults(remList, dictRules, maxVertexCount, totalEdgesSumCount, totalBitsAM,
+                                       totalBitsAL, totalVertexCount)
