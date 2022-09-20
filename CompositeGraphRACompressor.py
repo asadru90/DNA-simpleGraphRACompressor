@@ -13,7 +13,7 @@ def unionLists(lst1, lst2):
     return final_list
 
 
-def unionListCompositeSequential(lst1, lst2):
+def unionListCompositeConcateInterleving(lst1, lst2):
 
     final_list = []
     list1Count = len(lst1)
@@ -80,6 +80,23 @@ def unionListCompositeSequential(lst1, lst2):
             i += 1
     return final_list
 
+
+def unionListCompositeConcateAfter(lst1, lst2):
+
+    list1Count = len(lst1)
+    list2Count = len(lst2)
+    i = 0
+    print("unionListCompositeSequential Function called!", list1Count, list2Count)
+    for idx in range(0, list2Count):
+        temp1 = list(lst2[idx])
+        temp1.sort()
+        #print("List", i, temp1)
+        temp2 = repairAlgoDefFunc(temp1)
+        #print("List", i, temp1, temp2, len(temp1), len(temp2), temp)
+        lst1.append(temp2)
+        i += 1
+    return lst1
+
 def unionListObjects(lst1, lst2):
     final_list = []
     list1Count = len(lst1)
@@ -121,10 +138,10 @@ def countMostDictInit(nxtTerm):
 
 
 def findMostPair(rePairList, nxtTerm):
-    flag = 0
-    fprev = 0
-    fTerm = 0
-    sTerm = 0
+    flag = 0;
+    fprev = 0;
+    fTerm = 0;
+    sTerm = 0;
     countDuplicate = 0
     edgeListCount = len(rePairList)
     if edgeListCount > 1:
@@ -241,7 +258,7 @@ def repairAlgoDictFunc(repairList, vertexCount, edgeCount, maxPairLimit):
     # Replace the common pair of edges with dictionary rules
 
     maxPair = maxPairLimit + 1
-    while (maxPair > maxPairLimit) and (nextNum < maxBinaryNum):
+    while (maxPair > maxPairLimit+1) and (nextNum < maxBinaryNum):
 
         maxCount = 0
         countMostDictInit(nextNum + 1)
@@ -331,7 +348,7 @@ def printCompositeGraphResults(remList, dictRules, maxvertexCount, totaledgeCoun
         countIntRemList = countIntRemList + len(edgList)
     totalIntCount = len(dictRules) * 2 + countIntRemList
     represent1 = (totalIntCount * bitsPerInt)
-    represent2 = totalvertexCount + totaledgeCount
+    represent2 = totalvertexCount + countIntRemList
     represent3 = represent1 + represent2
 
     print("============= Composite Graph Dataset Results ============")
@@ -425,7 +442,7 @@ def dataCleaningForPPINetwork(mypath):
     return rows
 
 
-def dataCleaningForAll(mypath):
+def dataCleaningForEnzymes(mypath):
     file = open(mypath)
     csvreader = csv.reader(file)
     rows = []
@@ -508,34 +525,38 @@ def checkCommonEdges(edgeList1, edgeList2, edgeCount1, edgeCount2):
 
 if __name__ == "__main__":
 
-    compositeGraphsCount = 1
-    maxPairLimit = 1
-    datasetsPath = r"D:\Datasets\PPINetworkAnalysis-master\data\ProteinDataset"
-    datasetNamePath = ["", "", "", ""]
-    rows = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    edgeList = [[], [], [], []]
-    vertexCount = [0, 0, 0, 0]
-    edgeCount = [0, 0, 0, 0]
+    compositeGraphsCount = 2
+    maxPairLimit = 2
+    datasetsPath = r"D:\PhDGoetheUni\Works\NEXTConference22\Datasets\ProteinDataset"
+    datasetNamePath = ["","","","",""]
+    rows = [0,0,0,0,0]
+    edgeList = [[],[],[],[],[]]
+    vertexCount = [0, 0, 0, 0, 0]
+    edgeCount = [0, 0, 0, 0, 0]
     compositeEdgesList = []
     totalEdgesCount = 0
     totalVertexCount = 0
     maxVertexCount = 0
+    totalNonEmptyListCount = 0
+
     totalBitsAM = 0
     totalBitsAL = 0
-    bitsAM = [0, 0, 0, 0]
-    bitsAL = [0, 0, 0, 0]
+    bitsAM = [0, 0, 0, 0, 0]
+    bitsAL = [0, 0, 0, 0, 0]
 
-    datasetsNameFile = ["Liver-Normal.csv", "Colon-Normal.csv",
-                        "ENZYMES_g246.csv", "ENZYMES_g235.csv"]
+    datasetsNameFile = ["Liver-Cancer.csv", "Breast-Cancer.csv", "Kidney-Normal.csv", "Breast-Normal.csv"]
 
     compositeEdgesList = []
     j = 0
     for i in range(compositeGraphsCount):
         datasetNamePath[i] = datasetsPath + "\\" + datasetsNameFile[i]
-        rows[i] = dataCleaningForPPINetwork(datasetNamePath[i])
+        if i == 1:
+            rows[i] = dataCleaningForPPINetwork(datasetNamePath[i])
+        else:
+            rows[i] = dataCleaningForPPINetwork(datasetNamePath[i])
         nonEmptyVertexListCount, edgeList[i], vertexCount[i] = convertCSVtoList(rows[i])
         edgeCount[i] = edgesCountList(edgeList[i])
-        compositeEdgesList = unionListCompositeSequential(edgeList[i], compositeEdgesList)
+        compositeEdgesList = unionListCompositeConcateAfter(compositeEdgesList, edgeList[i])
         totalEdgesCount = totalEdgesCount + edgeCount[i]
         totalVertexCount = totalVertexCount + vertexCount[i]
         maxVertexCount = max(maxVertexCount, vertexCount[i])
@@ -543,10 +564,15 @@ if __name__ == "__main__":
         totalBitsAM = totalBitsAM + bitsAM[i]
         totalBitsAL = totalBitsAL + bitsAL[i]
         j = j + 1
+        totalNonEmptyListCount = totalNonEmptyListCount + nonEmptyVertexListCount
 
     totalEdgesSumCount = edgesCountList(compositeEdgesList)
     print("Total Edges Count:", totalEdgesSumCount, totalEdgesCount, totalEdgesCount - totalEdgesSumCount)
-    print("Empty Vertex List Count:", totalVertexCount, totalVertexCount - nonEmptyVertexListCount)
+    print("Empty Vertex List Count:", "Total:", totalVertexCount, "Total Non-empty:", totalNonEmptyListCount,
+          "Total Empty:", totalVertexCount - totalNonEmptyListCount, "Total required bits:",
+          maxVertexCount + (2 * (totalVertexCount - totalNonEmptyListCount)))
+    if compositeGraphsCount > 1:
+        totalVertexCount = maxVertexCount + (2 * (totalVertexCount - totalNonEmptyListCount))
 
     remList, dictRules = repairAlgoDictFunc(compositeEdgesList, maxVertexCount, totalEdgesSumCount, maxPairLimit)
     if compositeGraphsCount == 1:
